@@ -1,0 +1,33 @@
+body{
+    font-size: 18px;
+    font-family: 'Helvetica', 'Tahoma', 'Verdana', sans-serif;
+    line-height: 1.5em;
+    margin: 0 auto 0;
+    width: 80%;
+}
+
+h1{
+    font-weight: bold;
+    font-size: 6em;
+    line-height: 1em;
+}
+.pink{
+    color: darkorange;
+}
+
+/* configuration */
+.configuration .help{
+    color: darkgrey;
+}
+.error{
+    background: pink;
+    color: red;
+}
+
+/* invoices */
+.entry-description textarea{
+    width: 100%;
+}
+#entry-add, .entry-remove{
+    cursor: pointer;
+}

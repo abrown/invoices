@@ -1,0 +1,64 @@
+<div class="message">
+    <K:message/>
+</div>
+<form method="POST" class="configuration">
+    <fieldset>
+        <legend>Application</legend>
+        <label for="home-url">Base URL</label>
+        <input type="text" name="config[base_url]" value="<?php echo @$c['base_url']; ?>" />
+        <span class="help">Enter the URL to INVOICr's directory</span><br/>
+    </fieldset>
+    <fieldset>
+        <legend>Information</legend>
+        <p>A collection of custom options for the invoice application</p>
+        <label>'From' Name</label>
+        <input type="text" name="config[user][name]" value="<?php echo @$c['user']['name']; ?>" />
+        <span class="help">E.g.: John Doe</span><br/>
+        <label>'From' E-mail</label>
+        <input type="text" name="config[user][email]" value="<?php echo @$c['user']['email']; ?>"  />
+        <span class="help">E-mails will be sent with this address in the 'From' field</span><br/>
+        <label>Address 1:</label>
+        <input type="text" name="config[user][address1]" value="<?php echo @$c['user']['address1']; ?>" />
+        <span class="help"></span><br/>
+        <label>Address 2:</label>
+        <input type="text" name="config[user][address2]" value="<?php echo @$c['user']['addess2']; ?>" />
+        <span class="help"></span><br/>
+        <label>City:</label>
+        <input type="text" name="config[user][city]" value="<?php echo @$c['user']['city']; ?>" />
+        <span class="help"></span><br/>
+        <label>State/Province:</label>
+        <input type="text" name="config[user][state]" value="<?php echo @$c['user']['state']; ?>" />
+        <span class="help"></span><br/>
+        <label>Postal Code:</label>
+        <input type="text" name="config[user][zip]" value="<?php echo @$c['user']['zip']; ?>" />
+        <span class="help"></span><br/>
+        <label>Country:</label>
+        <input type="text" name="config[user][country]" value="<?php echo @$c['user']['country']; ?>" />
+        <span class="help"></span><br/>
+        <label>Default Wage Per Hour</label>
+        <input type="text" name="config[default_wage]" value="<?php echo @$c['default_wage']; ?>" />
+        <span class="help"></span><br/>
+        <label>Default Theme</label>
+        <input type="text" name="config[default_theme]" value="<?php echo @$c['default_theme']; ?>" />
+        <span class="help"></span><br/>
+    </fieldset>
+    <fieldset>
+        <legend>Database</legend>
+        <p>The following fields are used to config and connect to your server's database: </p>
+        <label>MySQL Host</label>
+        <input type="text" name="config[db][host]" value="<?php echo @$c['db']['host']; ?>" />
+        <span class="help"></span><br/>
+        <label>MySQL Database Name</label>
+        <input type="text" name="config[db][name]" value="<?php echo @$c['db']['name']; ?>" />
+        <span class="help"></span><br/>
+        <label>MySQL Database User Name</label>
+        <input type="text" name="config[db][username]" value="<?php echo @$c['db']['username']; ?>" />
+        <span class="help"></span><br/>
+        <label>MySQL Database Password</label>
+        <input type="text" name="config[db][password]" value="<?php echo @$c['db']['password']; ?>" />
+        <span class="help"></span><br/>
+    </fieldset>
+    <p>
+        <input type="submit" value="Save"/>
+    </p>
+</form>
