@@ -3,8 +3,8 @@ require 'libraries/start.php';
 
 // create app
 $app = new App();
-$app->setAllowedObjects('invoices');
-$app->setAllowedActions('create', 'edit', 'validate');
+$app->setAllowedObjects('invoices', 'payments');
+$app->setAllowedActions('create', 'edit', 'validate', 'view', 'publish');
 
 // routing
 try{ $object = Routing::getToken('object'); }
@@ -21,7 +21,9 @@ if( $object == 'home' ){
 }
 
 // allowed input
-$app->setOutputFormat('InvoiceHtml');
+if( $object == 'payments' ) $app->setOutputFormat('PaymentHtml');
+elseif( $object == 'invoices' ) $app->setOutputFormat('InvoiceHtml');
+else $app->setOutputFormat('AppFormatHtml');
 $app->setInputFormat('Html');
 
 // execute
