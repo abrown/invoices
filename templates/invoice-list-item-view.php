@@ -5,6 +5,15 @@
      <td><?php echo $invoice->project; ?></td>
     <td><?php echo $invoice->status; ?></td>
     <td>$<?php echo number_format($invoice->total, 2); ?></td>
-    <?php $url = get_base_url('invoicr').'/xhtml.php/invoices/'.$invoice->id.'/'; ?>
-    <td><a href="<?php echo $url.'edit'; ?>">Edit</a><a href="<?php echo $url.'delete'; ?>">Delete</a></td>
+    <?php 
+        $url = Configuration::get('base_url').'/xhtml.php/invoices/'.$invoice->id.'/'; 
+        $payment_url = Configuration::get('base_url').'/xhtml.php/payments/new/create?invoice_id='.$invoice->id; 
+    ?>
+    <td>
+        <a href="<?php echo $url.'edit'; ?>">Edit</a>
+        <a href="<?php echo $payment_url ?>">Add Payment</a>
+        <a href="<?php echo $url.'view'; ?>">Preview</a>
+        <a href="<?php echo $url.'publish'; ?>">Publish</a>
+        <a href="<?php echo $url.'delete'; ?>">Delete</a>
+    </td>
 </tr>
