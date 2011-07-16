@@ -1,2 +1,35 @@
-invoices
-------------
+INVOICES
+--------
+
+This application is designed as a simple and effective invoice management
+system. It uses PHP, MySQL with database transactions, theming, and HTML-to-PDF 
+conversions (wkhtmltopdf) to manipulate and present invoices to the user. 
+
+
+THEMES
+
+Build HTML themes with CSS styles incorporated into one file; upload these files
+to the 'themes' directory and set the filename as the default theme under
+Settings. In building these themes use the following replacement tokens to
+incorporate invoice data:
+
+invoice.id, invoice.status, invoice.total, invoice.pdf, invoice.created, 
+invoice.modified, invoice.client_first_name, invoice.client_last_name, 
+invoice.client_email, invoice.project, invoice.company, invoice.description, 
+invoice.entries, invoice.discounts, invoice.payments, invoice.url, 
+entry_table (HTML table of time entries), payment_table (HTML table of payments)
+
+Use double brackets to enclose the token. For example, the proper format for 
+inserting the link to the invoice would be:
+
+[[invoice.url]]
+
+
+SETTINGS
+
+CACHE
+
+All PDF files created by 'wkhtmltopdf' are stored in the cache folder
+
+
+PLUGINS
