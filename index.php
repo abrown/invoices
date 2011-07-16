@@ -1,12 +1,6 @@
 <?php
 require 'libraries/start.php';
 
-// configuration
-Configuration::setPath('settings/configuration.php');
-if( !is_valid(Configuration::getInstance()) ){
-    // start install process
-    Http::redirect('settings/configure.php');
-    exit();
-}
-
-// main application
+// install
+if( !is_file('install.log') ) Http::redirect('install.php'); 
+else Http::redirect('xhtml.php'); 
