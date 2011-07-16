@@ -42,8 +42,8 @@ class Invoice extends AppObjectPDO{
     }
     
     /**
-     * Lists some
-     * @return <array>
+     * Lists invoices; adds navigation parameters (start, limit)
+     * @return array
      */
     public function get_list($start, $limit){
         $query = array(
@@ -64,7 +64,7 @@ class Invoice extends AppObjectPDO{
         // return
         return $results;
     }
-    
+     
     /**
      * Returns total due for this invoice
      * @param type $id 
@@ -84,11 +84,27 @@ class Invoice extends AppObjectPDO{
         // subtract payments
         if( property_exists($invoice, 'payments') ){
             foreach($invoice->payments as $payment){
-                $total -= $payment->quantity;
+                $total -= $payment->total;
             }
         }
         // return
         return $total;
+    }
+    
+    /**
+     * Updates total field
+     * @return bool
+     */
+    public function update_total(){
+        try{
+            $total = $this->get_total();
+            $sql = $this->getDatabase()->prepare( "UPDATE `{$this->__table}` SET `total` = :total WHERE `{$this->__primary}` = :_object_identifier" );
+            $sql->bindParam( ':total', $total );
+            $sql->bindParam( ':_object_identifier', $this->__getID() );
+            $sql->execute();
+            return true;
+        }
+        catch(Exception $e){ return false; }
     }
     
     /**
@@ -140,14 +156,14 @@ class Invoice extends AppObjectPDO{
     }
     
     /**
-     * 
+     * Creates an invoice and related items
      */
     public function create(){
         $post = Http::getParameter('POST');
         if( count($this->validate()) > 0 ) throw new Exception('Invalid data entered', 400);
         // create invoice
         if( $this->id == 'new' ) $this->id = null;
-        $this->status = 'Unpaid';
+        $this->status = 'Drafted';
         $id = parent::create();
         // create entries
         $this->entries = array();
@@ -170,33 +186,11 @@ class Invoice extends AppObjectPDO{
             $this->discounts[] = $Discount;
         }
         // update total
-        $this->total = $this->get_total($this);
-        $sql = $this->getDatabase()->prepare( "UPDATE `{$this->__table}` SET `total` = :total WHERE `{$this->__primary}` = :_object_identifier" );
-        $sql->bindParam( ':total', $this->total );
-        $sql->bindParam( ':_object_identifier', $this->__getID() );
-        $sql->execute();
+        $this->update_total();
+        // update cache, see libraries/misc.php
+        delete_cache_entry('invoices', $id);
         // return
         return $id;
-    }
-    
-    /**
-     * Deletes an invoice and its associations
-     * @return bool 
-     */
-    public function delete($delete_payments = true){
-        // get entries
-        $Entry = new Entry();
-        $Entry->delete_from_id($this->id);
-        // get discounts
-        $Discount = new Discount();
-        $Discount->delete_from_id($this->id);
-        // get payments
-        if( $delete_payments ){
-            $Payment = new Payment();
-            $Payment->delete_from_id($this->id);
-        }
-        // get total
-        return parent::delete();
     }
     
     /**
@@ -221,13 +215,89 @@ class Invoice extends AppObjectPDO{
         return $out;
     }
     
+    /**
+     * Placeholder for the 'Edit' view
+     * @return Invoice 
+     */
     public function edit(){
         return $this->read();
     }
     
+    /**
+     * Updates records, uses 'create' functionality
+     * @return Invoice 
+     */
     public function update(){
         $this->delete( false );
         $this->create();
         return $this->toClone();
+    }
+    
+    /**
+     * Deletes an invoice and its associations
+     * @return bool 
+     */
+    public function delete($delete_payments = true){
+        // get entries
+        $Entry = new Entry();
+        $Entry->delete_from_id($this->id);
+        // get discounts
+        $Discount = new Discount();
+        $Discount->delete_from_id($this->id);
+        // get payments
+        if( $delete_payments ){
+            $Payment = new Payment();
+            $Payment->delete_from_id($this->id);
+        }
+        // update cache, see libraries/misc.php
+        delete_cache_entry('invoices', $id);
+        // get total
+        return parent::delete();
+    }
+    
+    /**
+     * Publishes an invoice
+     */
+    public function publish(){
+        // update status field
+        try{
+            $status = "Published";
+            $sql = $this->getDatabase()->prepare( "UPDATE `{$this->__table}` SET `status` = :status WHERE `{$this->__primary}` = :_object_identifier" );
+            $sql->bindParam( ':status', $status );
+            $sql->bindParam( ':_object_identifier', $this->__getID() );
+            $sql->execute();
+        }
+        catch(Exception $e){ pr($sql->errorInfo()); }
+        // send mail
+        $this->mail();
+        // return
+        return $this->toClone();
+    }
+    
+    /**
+     * Sends published invoice to client
+     * @return bool 
+     */
+    public function mail(){
+        $this->read();
+        // make e-mail template
+        $template = new Template(Configuration::get('base_dir').DS.'templates'.DS.'mail.php');
+        $template->replaceFromPHPFile(
+            'content', 
+            Configuration::get('base_dir').DS.'templates'.DS.'invoice-list.php',
+            array('invoice'=>$this->toClone())
+        );
+        // send e-mail
+        $config = Configuration::getInstance();
+        $header = "From: {$config['user']['name']} <{$config['user']['email']}>";
+        return mail($this->client_email, "An invoice has been published", $template->toString(), $header);
+    }
+    
+    /**
+     * Displays an invoice using a theme
+     * @return Invoice 
+     */
+    public function view(){
+        return $this->read();
     }
 }
