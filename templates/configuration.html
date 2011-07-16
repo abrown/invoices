@@ -2,12 +2,12 @@
     <K:message/>
 </div>
 <form method="POST" class="configuration">
-    <fieldset>
+    <!--<fieldset>
         <legend>Application</legend>
         <label for="home-url">Base URL</label>
         <input type="text" name="config[base_url]" value="<?php echo @$c['base_url']; ?>" />
-        <span class="help">Enter the URL to INVOICr's directory</span><br/>
-    </fieldset>
+        <span class="help">Enter the URL to <code>Invoices'</code> directory</span><br/>
+    </fieldset>-->
     <fieldset>
         <legend>Information</legend>
         <p>A collection of custom options for the invoice application</p>
@@ -38,8 +38,11 @@
         <label>Default Wage Per Hour</label>
         <input type="text" name="config[default_wage]" value="<?php echo @$c['default_wage']; ?>" />
         <span class="help"></span><br/>
-        <label>Default Theme</label>
-        <input type="text" name="config[default_theme]" value="<?php echo @$c['default_theme']; ?>" />
+        <label>Default Invoice Theme</label>
+        <input type="text" name="config[default_invoice_theme]" value="<?php echo @$c['default_invoice_theme']; ?>" />
+        <span class="help"></span><br/>
+        <label>Default Receipt Theme</label>
+        <input type="text" name="config[default_receipt_theme]" value="<?php echo @$c['default_receipt_theme']; ?>" />
         <span class="help"></span><br/>
     </fieldset>
     <fieldset>
