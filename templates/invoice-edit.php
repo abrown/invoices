@@ -70,10 +70,21 @@
     </fieldset>
     <fieldset>
         <legend>Payments</legend>
-        <table id="entries">
+        <?php 
+            $payment_url = Configuration::get('base_url').'/xhtml.php/payments/new/create?invoice_id='.$invoice->id; 
+        ?>
+        <a href="<?php echo $payment_url ?>">Add Payment</a>
+        <table id="payments">
             <tr>
-                <th></th><th>Date (DDMMYYYY)</th><th>Type</th><th>Amount</th>
+                <th>Date (DDMMYYYY)</th><th>Type</th><th>Amount</th><th></th>
             </tr>
+            <?php
+                if( $invoice->payments ){
+                    foreach($invoice->payments as $payment){
+                        include(Configuration::get('base_dir') . DS . 'templates' . DS . 'payment-list-item-view.php');
+                    }
+                }
+            ?>
         </table>
     </fieldset>
     <input type="submit" value="Save" id="invoice-save"/>
