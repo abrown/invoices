@@ -1,3 +1,4 @@
+<?php Plugin::import('basecamp-contact'); ?>
 <form method="POST" action="<?php echo $action; ?>" id="invoice-create">
     <div id="messages"></div>
     <fieldset>
