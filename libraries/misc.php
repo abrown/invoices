@@ -21,6 +21,18 @@ function is_valid( $config ){
 }
 
 /**
+ * Deletes a cache file; used when modifying database objects
+ * See pdf.php for similar code
+ * @param string $object
+ * @param string $id 
+ */
+function delete_cache_entry($object, $id){
+    $URL = Configuration::get('base_url') . "/xhtml.php/$object/$id/view";
+    $CACHE = Configuration::get('base_dir') . DS . 'cache' . DS . md5($URL) . '.pdf';
+    @unlink($CACHE);
+}
+
+/**
  * Returns configuration errors
  * @param array $config
  * @return array 
@@ -29,8 +41,8 @@ function find_configuration_errors( $config ){
     
     // create ruleset
     $v = new Validation();
-    $v->addRule('base_url', Validation::NOT_EMPTY, 'Base URL must not be empty');
-    $v->addRule('base_url', Validation::URL, 'Base URL must be a valid URL');
+    //$v->addRule('base_url', Validation::NOT_EMPTY, 'Base URL must not be empty');
+    //$v->addRule('base_url', Validation::URL, 'Base URL must be a valid URL');
     $v->addRule('db.host', Validation::NOT_EMPTY, 'Database Host must not be empty');
     $v->addRule('db.host', Validation::STRING, 'Database Host must be a string');
     $v->addRule('db.name', Validation::NOT_EMPTY, 'Database Name must not be empty');
@@ -50,53 +62,23 @@ function find_configuration_errors( $config ){
     $v->addRule('user.state', Validation::STRING, 'State/Province must be a string');
     $v->addRule('user.zip', Validation::STRING, 'Postal Code must be a string');
     $v->addRule('user.country', Validation::STRING, 'Country must be a string');
-    $v->addRule('default_theme', Validation::STRING, 'Default Theme must be a string');
+    $v->addRule('default_invoice_theme', Validation::STRING, 'Default Invoice Theme must be a string');
+    $v->addRule('default_receipt_theme', Validation::STRING, 'Default Receipt Theme must be a string');
     $v->addRule('default_wage', Validation::NUMERIC, 'Default Wage must be a decimal number');
 
     // get errors
     $errors = $v->validateList( Set::flatten($config) );
     
     // test database connnection
-    try { get_database(); }
+    try { get_database($config); }
     catch (Exception $e) { $errors[] = 'Could not connect to database with the given database information'; }
     
     // return
     return Set::flatten($errors);
 }
 
-/**
- * Gets database instance from configuration information
- * @staticvar any $instance
- * @return PDO 
- */
-function get_database(){
-    static $instance = null;
-    if( !$instance ) {
-        // get configuration
-        $config = Configuration::getInstance();
-        // create PDO instance
-        try {
-            $dsn = "mysql:dbname={$config['db']['name']};host={$config['db']['host']}";
-            $instance = new PDO($dsn, $config['db']['username'], $config['db']['password']);
-        } catch (PDOException $e) {
-            throw new Exception($e->getMessage(), 500);
-        }
-    }
+function get_database($config){
+    $dsn = "mysql:dbname={$config['db']['name']};host={$config['db']['host']}";
+    $instance = new PDO($dsn, $config['db']['username'], $config['db']['password']);
     return $instance;
-}
-
-/**
- * Checks database for correct tables
- */
-function has_valid_tables(){
-    $tables = array('invoices', 'entries', 'plugins', 'themes');
-    $_tables = array();
-    // query
-    $db = get_database();
-    // check tables
-    foreach($db->query('SHOW TABLES') as $table){
-        $_tables[] = $table[0];
-    }
-    // return
-    return array_diff($tables, $_tables) ? false : true;
 }
