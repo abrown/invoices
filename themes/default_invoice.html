@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Invoice #[[invoice.id]]</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <p>
+            <b>Array Design Studios</b><br/>
+            400 Example Drive<br/>
+            CA<br/>
+            (123) 456 - 7890<br/>
+        </p>
+        <p>
+            <b>Bill To: </b> [[invoice.client_first_name]] [[invoice.client_last_name]]<br/>
+        </p>
+        [[entry_table]]
+        <p><a href="[[invoice.url]]">View Online</a> <a href="[[invoice.pdf]]">View PDF</a></p>
+    </body>
+</html>

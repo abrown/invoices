@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Receipt #[[payment.id]]</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <p>
+            <b>Array Design Studios</b><br/>
+            400 Example Drive<br/>
+            CA<br/>
+            (123) 456 - 7890<br/>
+        </p>
+        <p>
+            <b>Billed To: </b> [[invoice.client_first_name]] [[invoice.client_last_name]]<br/>
+        </p>
+        <p>
+            The following payment was made: $[[payment.total]]
+        </p>
+        <p><a href="[[payment.url]]">View Online</a> <a href="[[payment.pdf]]">View PDF</a></p>
+    </body>
+</html>
